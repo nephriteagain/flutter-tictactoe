@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/src/box.dart';
+import 'package:tic_tac_toe/src/player_indicator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,23 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Tic Tac Toe',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
@@ -38,15 +25,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -91,6 +69,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void move({required int index}) {
+    BoxState selected = board[index];
+    if (selected != BoxState.none) {
+      return;
+    }
     setState(() {
       BoxState box = playerTurn == PlayerTurn.p1 ? BoxState.x : BoxState.o;
       board[index] = box;
@@ -194,181 +176,28 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Text("Play"),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+          child: SizedBox(
+        width: 300,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    move(index: 0);
-                  },
-                  child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue, width: 1)),
-                      child: Center(
-                          child: Text(
-                        getValue(board[0]),
-                        style: const TextStyle(
-                          fontSize: 24,
-                        ),
-                      ))),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    move(index: 1);
-                  },
-                  child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue, width: 1)),
-                      child: Center(
-                          child: Text(
-                        getValue(board[1]),
-                        style: const TextStyle(
-                          fontSize: 24,
-                        ),
-                      ))),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    move(index: 2);
-                  },
-                  child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue, width: 1)),
-                      child: Center(
-                          child: Text(
-                        getValue(board[2]),
-                        style: const TextStyle(
-                          fontSize: 24,
-                        ),
-                      ))),
-                ),
-              ],
+            PlayerIndicator(
+              playerTurn: playerTurn,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    move(index: 3);
-                  },
-                  child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue, width: 1)),
-                      child: Center(
-                          child: Text(
-                        getValue(board[3]),
-                        style: const TextStyle(
-                          fontSize: 24,
-                        ),
-                      ))),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    move(index: 4);
-                  },
-                  child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue, width: 1)),
-                      child: Center(
-                          child: Text(
-                        getValue(board[4]),
-                        style: const TextStyle(
-                          fontSize: 24,
-                        ),
-                      ))),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    move(index: 5);
-                  },
-                  child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue, width: 1)),
-                      child: Center(
-                          child: Text(
-                        getValue(board[5]),
-                        style: const TextStyle(
-                          fontSize: 24,
-                        ),
-                      ))),
-                ),
-              ],
+            Wrap(
+              children: board.asMap().entries.map((entry) {
+                int index = entry.key;
+                BoxState value = entry.value;
+                return Box(
+                  index: index,
+                  value: value,
+                  move: move,
+                );
+              }).toList(),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    move(index: 6);
-                  },
-                  child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue, width: 1)),
-                      child: Center(
-                          child: Text(
-                        getValue(board[6]),
-                        style: const TextStyle(
-                          fontSize: 24,
-                        ),
-                      ))),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    move(index: 7);
-                  },
-                  child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue, width: 1)),
-                      child: Center(
-                          child: Text(
-                        getValue(board[7]),
-                        style: const TextStyle(
-                          fontSize: 24,
-                        ),
-                      ))),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    move(index: 8);
-                  },
-                  child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue, width: 1)),
-                      child: Center(
-                          child: Text(
-                        getValue(board[8]),
-                        style: const TextStyle(
-                          fontSize: 24,
-                        ),
-                      ))),
-                ),
-              ],
-            )
           ],
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      )),
     );
   }
 }
